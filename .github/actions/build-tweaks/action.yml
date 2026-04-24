@@ -21,6 +21,8 @@ inputs:
     required: true
   enable_gonerino:
     required: true
+  enable_volumeboostyt:
+    required: true
   cache_youpip_hit:
     required: true
   cache_ytuhd_hit:
@@ -40,6 +42,8 @@ inputs:
   cache_demc_hit:
     required: true
   cache_gonerino_hit:
+    required: true
+  cache_volumeboostyt_hit:
     required: true
   cache_ytvo_hit:
     required: true
@@ -67,6 +71,7 @@ runs:
         ENABLE_YTICONS: ${{ inputs.enable_yticons }}
         ENABLE_DEMC: ${{ inputs.enable_demc }}
         ENABLE_GONERINO: ${{ inputs.enable_gonerino }}
+        ENABLE_VOLUMEBOOSTYT: ${{ inputs.enable_volumeboostyt }}
         CACHE_YOUPIP_HIT: ${{ inputs.cache_youpip_hit }}
         CACHE_YTUHD_HIT: ${{ inputs.cache_ytuhd_hit }}
         CACHE_RYD_HIT: ${{ inputs.cache_ryd_hit }}
@@ -77,6 +82,7 @@ runs:
         CACHE_YTICONS_HIT: ${{ inputs.cache_yticons_hit }}
         CACHE_DEMC_HIT: ${{ inputs.cache_demc_hit }}
         CACHE_GONERINO_HIT: ${{ inputs.cache_gonerino_hit }}
+        CACHE_VOLUMEBOOSTYT_HIT: ${{ inputs.cache_volumeboostyt_hit }}
         CACHE_YTVO_HIT: ${{ inputs.cache_ytvo_hit }}
       run: |
         cd ${{ inputs.workspace }}
@@ -93,6 +99,7 @@ runs:
           "ENABLE_YTICONS|CACHE_YTICONS_HIT|YTIcons|yticons.deb|YTIcons"
           "ENABLE_DEMC|CACHE_DEMC_HIT|DontEatMyContent|demc.deb|DontEatMyContent"
           "ENABLE_GONERINO|CACHE_GONERINO_HIT|Gonerino|gonerino.deb|Gonerino"
+          "ENABLE_VOLUMEBOOSTYT|CACHE_VOLUMEBOOSTYT_HIT|VolumeBoostYT|volumeboostyt.deb|VolumeBoostYT"
         )
         
         for tweak in "${tweaks[@]}"; do
@@ -123,4 +130,3 @@ runs:
             echo "Using cached YTVideoOverlay"
           fi
         fi
-
