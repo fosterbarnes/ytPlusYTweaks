@@ -25,7 +25,7 @@ Added tweaks:
 - [YTABConfig](https://github.com/PoomSmart/YTABConfig)
 - [YTIcons](https://github.com/PoomSmart/YTIcons)
 - [YouGroupSettings](https://github.com/fosterbarnes/YouGroupSettings)
-- [Gonerino](https://github.com/castdrian/Gonerino)
+- [Gonerino](https://github.com/fosterbarnes/YGonerino)
 - [AutoFLEX](https://github.com/pwnless/AutoFLEX)
 
 Original repo: https://github.com/dayanch96/YTLite
@@ -343,8 +343,8 @@ Fill out an [issue form](https://github.com/fosterbarnes/YTPlusYTweaks/issues) w
 
 <details>
   <summary>Gonerino</summary>
-  <p>Gonerino is a tweak developed by <a href="https://github.com/castdrian">castdrian</a> that lets you block certain content from your home feed.</p>
-  <p>Source code and additional information are available <a href="https://github.com/castdrian/Gonerino">in castdrian's GitHub repository</a>.</p>
+  <p>Gonerino is a tweak developed by <a href="https://github.com/castdrian">castdrian</a> that lets you block certain content from your home feed. Forked by <a href="https://github.com/FosterBarnes">FosterBarnes</a> as <a href="https://github.com/fosterbarnes/YGonerino">YGonerino</a> with a v1.3.3 fix for home feed blocking.</p>
+  <p>Source code and additional information are available <a href="https://github.com/fosterbarnes/YGonerino">in fosterbarnes's GitHub repository</a>.</p>
 </details>
 
 <details>
@@ -362,7 +362,7 @@ Thank you to everyone that made this project possible! This project would not ex
 
 [therealFoxster](https://github.com/therealFoxster) - DontEatMyContent
 
-[castdrian](https://github.com/castdrian/Gonerino) - Gonerino
+[castdrian](https://github.com/castdrian/Gonerino) - Gonerino (original), [fosterbarnes](https://github.com/fosterbarnes/YGonerino) - YGonerino fork
 
 [pwnless](https://github.com/pwnless/AutoFLEX) - AutoFLEX
 

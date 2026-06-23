@@ -593,9 +593,9 @@ clone_tweak() {
     if [[ ! -d "$name" ]]; then
         print_info "Cloning $name..."
         if [[ -n "$extra_flags" ]]; then
-            git clone --quiet --depth=1 $extra_flags "$repo_url"
+            git clone --quiet --depth=1 $extra_flags "$repo_url" "$name"
         else
-            git clone --quiet --depth=1 "$repo_url"
+            git clone --quiet --depth=1 "$repo_url" "$name"
         fi
     fi
 }
@@ -619,7 +619,7 @@ clone_tweaks() {
     clone_tweak "$ENABLE_YTWEAKS" "YTweaks" "ytwks.deb" "https://github.com/fosterbarnes/YTweaks.git"
     clone_tweak "$ENABLE_YTICONS" "YTIcons" "yticons.deb" "https://github.com/PoomSmart/YTIcons.git"
     clone_tweak "$ENABLE_DEMC" "DontEatMyContent" "demc.deb" "https://github.com/therealFoxster/DontEatMyContent.git" "--recurse-submodules"
-    clone_tweak "$ENABLE_GONERINO" "Gonerino" "gonerino.deb" "https://github.com/castdrian/Gonerino.git"
+    clone_tweak "$ENABLE_GONERINO" "Gonerino" "gonerino.deb" "https://github.com/fosterbarnes/YGonerino.git"
     clone_tweak "$ENABLE_AUTOFLEX" "AutoFLEX" "autoflex.deb" "https://github.com/pwnless/AutoFLEX.git"
     
     # YTVideoOverlay is required if YouPiP or YouQuality is enabled

@@ -116,7 +116,7 @@ runs:
           "ENABLE_YTWEAKS|ytwks|https://github.com/fosterbarnes/YTweaks.git|YTweaks"
           "ENABLE_YTICONS|yticons|https://github.com/PoomSmart/YTIcons.git|YTIcons"
           "ENABLE_DEMC|demc|https://github.com/therealFoxster/DontEatMyContent.git|DontEatMyContent"
-          "ENABLE_GONERINO|gonerino|https://github.com/castdrian/Gonerino.git|Gonerino"
+          "ENABLE_GONERINO|gonerino|https://github.com/fosterbarnes/YGonerino.git|Gonerino"
           "ENABLE_AUTOFLEX|autoflex|https://github.com/pwnless/AutoFLEX.git|AutoFLEX"
         )
         
