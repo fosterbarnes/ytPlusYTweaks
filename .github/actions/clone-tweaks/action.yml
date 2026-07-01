@@ -86,7 +86,7 @@ runs:
         # enable_var|cache_var|repo_url|display_name|extra_flags
         declare -a tweaks=(
           "ENABLE_YOUPIP|CACHE_YOUPIP_HIT|https://github.com/PoomSmart/YouPiP.git|YouPiP|"
-          "ENABLE_YTUHD|CACHE_YTUHD_HIT|https://github.com/Tonwalter888/YTUHD.git|YTUHD|"
+          "ENABLE_YTUHD|CACHE_YTUHD_HIT|https://github.com/PoomSmart/YTUHD.git|YTUHD|--recurse-submodules --shallow-submodules"
           "ENABLE_RYD|CACHE_RYD_HIT|https://github.com/PoomSmart/Return-YouTube-Dislikes.git|Return-YouTube-Dislikes|"
           "ENABLE_YOUGROUPSETTINGS|CACHE_YGS_HIT|https://github.com/fosterbarnes/YouGroupSettings.git|YouGroupSettings|"
           "ENABLE_YQ|CACHE_YQ_HIT|https://github.com/PoomSmart/YouQuality.git|YouQuality|"

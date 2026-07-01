@@ -522,9 +522,9 @@ clone_youtube_header() {
     if ! any_tweaks_enabled; then
         return
     fi
-    
+
     print_info "Cloning YouTubeHeader..."
-    
+
     if [[ -d "$THEOS/include/YouTubeHeader" ]]; then
         print_info "YouTubeHeader exists. Pulling latest changes..."
         cd "$THEOS/include/YouTubeHeader"
@@ -537,14 +537,13 @@ clone_youtube_header() {
         git clone --quiet --depth=1 https://github.com/PoomSmart/YouTubeHeader.git
         cd "$BUILD_DIR"
     fi
-    
-    # Copy to YTHeaders if DontEatMyContent is enabled
+
     if [[ "$ENABLE_DEMC" == "true" ]]; then
         print_info "Copying YouTubeHeader to YTHeaders for DontEatMyContent..."
         rm -rf "$THEOS/include/YTHeaders"
         cp -r "$THEOS/include/YouTubeHeader" "$THEOS/include/YTHeaders"
     fi
-    
+
     print_success "YouTubeHeader setup complete"
 }
 
@@ -553,9 +552,9 @@ clone_ps_header() {
     if ! any_tweaks_enabled; then
         return
     fi
-    
+
     print_info "Cloning PSHeader..."
-    
+
     if [[ -d "$THEOS/include/PSHeader" ]]; then
         print_info "PSHeader exists. Pulling latest changes..."
         cd "$THEOS/include/PSHeader"
@@ -568,7 +567,7 @@ clone_ps_header() {
         git clone --quiet --depth=1 https://github.com/PoomSmart/PSHeader.git
         cd "$BUILD_DIR"
     fi
-    
+
     print_success "PSHeader setup complete"
 }
 
@@ -611,7 +610,7 @@ clone_tweaks() {
     cd "$BUILD_DIR"
     
     clone_tweak "$ENABLE_YOUPIP" "YouPiP" "youpip.deb" "https://github.com/PoomSmart/YouPiP.git"
-    clone_tweak "$ENABLE_YTUHD" "YTUHD" "ytuhd.deb" "https://github.com/Tonwalter888/YTUHD.git"
+    clone_tweak "$ENABLE_YTUHD" "YTUHD" "ytuhd.deb" "https://github.com/PoomSmart/YTUHD.git" "--recurse-submodules --shallow-submodules"
     clone_tweak "$ENABLE_RYD" "Return-YouTube-Dislikes" "ryd.deb" "https://github.com/PoomSmart/Return-YouTube-Dislikes.git"
     clone_tweak "$ENABLE_YOUGROUPSETTINGS" "YouGroupSettings" "ygs.deb" "https://github.com/fosterbarnes/YouGroupSettings.git"
     clone_tweak "$ENABLE_YQ" "YouQuality" "yq.deb" "https://github.com/PoomSmart/YouQuality.git"
@@ -759,11 +758,12 @@ copy_prebuilt_debs() {
 }
 
 # Helper function to build a single tweak
-# Usage: build_tweak <enable_flag> <name> <deb_name>
+# Usage: build_tweak <enable_flag> <name> <deb_name> [make_extra]
 build_tweak() {
     local enable_flag="$1"
     local name="$2"
     local deb_name="$3"
+    local make_extra="${4:-}"
     
     if [[ "$enable_flag" != "true" ]]; then
         return
@@ -776,7 +776,10 @@ build_tweak() {
     
     print_info "Building $name..."
     cd "$name"
-    make clean package DEBUG=0 FINALPACKAGE=1
+    if [[ "$name" == "YTUHD" ]]; then
+        make libvpx dav1d $make_extra
+    fi
+    make clean package DEBUG=0 FINALPACKAGE=1 $make_extra
     mv packages/*.deb "$BUILD_DIR/$deb_name"
     cd ..
 }
@@ -798,7 +801,7 @@ build_tweaks() {
     export THEOS="$THEOS"
     
     build_tweak "$ENABLE_YOUPIP" "YouPiP" "youpip.deb"
-    build_tweak "$ENABLE_YTUHD" "YTUHD" "ytuhd.deb"
+    build_tweak "$ENABLE_YTUHD" "YTUHD" "ytuhd.deb" "SIDELOAD=1"
     build_tweak "$ENABLE_RYD" "Return-YouTube-Dislikes" "ryd.deb"
     build_tweak "$ENABLE_YOUGROUPSETTINGS" "YouGroupSettings" "ygs.deb"
     build_tweak "$ENABLE_YQ" "YouQuality" "yq.deb"

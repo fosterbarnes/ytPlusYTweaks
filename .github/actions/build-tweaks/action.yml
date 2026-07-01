@@ -87,28 +87,31 @@ runs:
       run: |
         cd ${{ inputs.workspace }}
         
-        # enable_var|cache_var|dir_name|output_file|display_name
+        # enable_var|cache_var|dir_name|output_file|display_name|make_extra
         declare -a tweaks=(
-          "ENABLE_YOUPIP|CACHE_YOUPIP_HIT|YouPiP|youpip.deb|YouPiP"
-          "ENABLE_YTUHD|CACHE_YTUHD_HIT|YTUHD|ytuhd.deb|YTUHD"
-          "ENABLE_RYD|CACHE_RYD_HIT|Return-YouTube-Dislikes|ryd.deb|Return-YouTube-Dislikes"
-          "ENABLE_YOUGROUPSETTINGS|CACHE_YGS_HIT|YouGroupSettings|ygs.deb|YouGroupSettings"
-          "ENABLE_YQ|CACHE_YQ_HIT|YouQuality|yq.deb|YouQuality"
-          "ENABLE_YTABCONFIG|CACHE_YABC_HIT|YTABConfig|yabc.deb|YTABConfig"
-          "ENABLE_YTWEAKS|CACHE_YTWKS_HIT|YTweaks|ytwks.deb|YTweaks"
-          "ENABLE_YTICONS|CACHE_YTICONS_HIT|YTIcons|yticons.deb|YTIcons"
-          "ENABLE_DEMC|CACHE_DEMC_HIT|DontEatMyContent|demc.deb|DontEatMyContent"
-          "ENABLE_GONERINO|CACHE_GONERINO_HIT|Gonerino|gonerino.deb|Gonerino"
+          "ENABLE_YOUPIP|CACHE_YOUPIP_HIT|YouPiP|youpip.deb|YouPiP|"
+          "ENABLE_YTUHD|CACHE_YTUHD_HIT|YTUHD|ytuhd.deb|YTUHD|SIDELOAD=1"
+          "ENABLE_RYD|CACHE_RYD_HIT|Return-YouTube-Dislikes|ryd.deb|Return-YouTube-Dislikes|"
+          "ENABLE_YOUGROUPSETTINGS|CACHE_YGS_HIT|YouGroupSettings|ygs.deb|YouGroupSettings|"
+          "ENABLE_YQ|CACHE_YQ_HIT|YouQuality|yq.deb|YouQuality|"
+          "ENABLE_YTABCONFIG|CACHE_YABC_HIT|YTABConfig|yabc.deb|YTABConfig|"
+          "ENABLE_YTWEAKS|CACHE_YTWKS_HIT|YTweaks|ytwks.deb|YTweaks|"
+          "ENABLE_YTICONS|CACHE_YTICONS_HIT|YTIcons|yticons.deb|YTIcons|"
+          "ENABLE_DEMC|CACHE_DEMC_HIT|DontEatMyContent|demc.deb|DontEatMyContent|"
+          "ENABLE_GONERINO|CACHE_GONERINO_HIT|Gonerino|gonerino.deb|Gonerino|"
         )
         
         for tweak in "${tweaks[@]}"; do
-          IFS='|' read -r enable_var cache_var dir_name output_file display_name <<< "$tweak"
+          IFS='|' read -r enable_var cache_var dir_name output_file display_name make_extra <<< "$tweak"
           
           if [ "${!enable_var}" = "true" ]; then
             if [ "${!cache_var}" != "true" ]; then
               echo "Building $display_name..."
               cd "$dir_name"
-              make clean package DEBUG=0 FINALPACKAGE=1
+              if [ "$dir_name" = "YTUHD" ]; then
+                make libvpx dav1d $make_extra
+              fi
+              make clean package DEBUG=0 FINALPACKAGE=1 $make_extra
               mv packages/*.deb "${{ inputs.workspace }}/$output_file"
               cd ..
             else

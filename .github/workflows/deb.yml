@@ -108,7 +108,7 @@ jobs:
         uses: ./.github/actions/check-version
 
       - name: Install dependencies
-        run: brew install make ldid
+        run: brew install make ldid meson ninja
 
       - name: Set PATH environment variable
         run: echo "$(brew --prefix make)/libexec/gnubin" >> $GITHUB_PATH

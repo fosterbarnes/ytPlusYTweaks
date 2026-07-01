@@ -206,7 +206,7 @@ jobs:
           echo "version=$APP_VERSION" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
-        run: brew install make ldid
+        run: brew install make ldid meson ninja
 
       - name: Set GNU make PATH environment variable
         run: echo "$(brew --prefix make)/libexec/gnubin" >> $GITHUB_PATH
