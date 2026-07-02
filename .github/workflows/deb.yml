@@ -99,7 +99,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v6.0.3
         with:
           #path: main
           submodules: recursive
@@ -339,7 +339,7 @@ jobs:
           echo "Created debs.zip with all DEB files"
 
       - name: Upload to GitHub Releases
-        uses: softprops/action-gh-release@v2.0.1
+        uses: softprops/action-gh-release@v3.0.1
         with:
           tag_name: debs-${{ github.run_number }}
           name: YTPlusYTweaks_${{ steps.ytlite_version.outputs.version }}_SDK${{ inputs.sdk_version }} (${{ github.run_number }})

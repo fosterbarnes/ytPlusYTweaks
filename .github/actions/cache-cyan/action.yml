@@ -16,7 +16,7 @@ runs:
   steps:
     - name: Restore Cyan from cache
       id: cache
-      uses: actions/cache@v4
+      uses: actions/cache@v6.1.0
       with:
         path: |
           ~/.local/pipx/venvs/cyan

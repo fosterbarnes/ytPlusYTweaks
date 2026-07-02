@@ -123,7 +123,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v6.0.3
         with:
           #path: main
           submodules: recursive
@@ -430,7 +430,7 @@ jobs:
           cyan -i youtube.ipa -o YTPlusYTweaks_${{ steps.ytlite_version.outputs.version }}_SDK${{ inputs.sdk_version }}_v${{ steps.app_version.outputs.version }}.ipa -uwef $tweaks -n "${{ inputs.display_name }}" -b ${{ inputs.bundle_id }}
 
       - name: Upload to GitHub Releases
-        uses: softprops/action-gh-release@v2.0.1
+        uses: softprops/action-gh-release@v3.0.1
         with:
           tag_name: ytp-${{ github.run_number }}
           name: YTPlusYTweaks_${{ steps.ytlite_version.outputs.version }}_SDK${{ inputs.sdk_version }}_v${{ steps.app_version.outputs.version }} (${{ github.run_number }})
