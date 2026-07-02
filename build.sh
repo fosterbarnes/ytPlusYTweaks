@@ -245,6 +245,46 @@ parse_args() {
     fi
 }
 
+# Ensure xcrun can locate the iphoneos SDK (required by YTUHD libvpx/dav1d builds).
+ensure_xcode() {
+    if xcrun --sdk iphoneos --show-sdk-path &>/dev/null; then
+        return
+    fi
+
+    local xcode_dev="/Applications/Xcode.app/Contents/Developer"
+    if [[ -d "$xcode_dev" ]]; then
+        export DEVELOPER_DIR="$xcode_dev"
+        if xcrun --sdk iphoneos --show-sdk-path &>/dev/null; then
+            print_warning "xcode-select points to Command Line Tools; using Xcode at $xcode_dev"
+            print_info "Run 'sudo xcode-select -s $xcode_dev' to fix this permanently"
+            return
+        fi
+    fi
+
+    print_error "Cannot locate iphoneos SDK (xcrun --sdk iphoneos failed)."
+    print_error "Install Xcode from the App Store, then run:"
+    print_error "  sudo xcode-select -s /Applications/Xcode.app/Contents/Developer"
+    exit 1
+}
+
+# Ensure meson/ninja are available (required by YTUHD dav1d build).
+ensure_build_tools() {
+    if [[ "$ENABLE_YTUHD" != "true" ]]; then
+        return
+    fi
+    if command -v meson &>/dev/null; then
+        return
+    fi
+    if command -v brew &>/dev/null; then
+        print_info "Installing meson (required for YTUHD)..."
+        brew install meson
+        return
+    fi
+    print_error "meson is required to build YTUHD but was not found."
+    print_error "Install it with: brew install meson"
+    exit 1
+}
+
 # Ensure THEOS is set (e.g. from build_dependencies.sh or environment)
 ensure_theos() {
     if [[ -z "${THEOS:-}" ]]; then
@@ -473,7 +513,7 @@ download_ytplus() {
 clone_safari_extension() {
     print_info "Cloning Open in YouTube Safari extension..."
     
-    if [[ -f "$BUILD_DIR/OpenYoutubeSafariExtension.appex" ]]; then
+    if [[ -e "$BUILD_DIR/OpenYoutubeSafariExtension.appex" ]]; then
         print_info "Safari extension already exists"
         return
     fi
@@ -776,9 +816,17 @@ build_tweak() {
     
     print_info "Building $name..."
     cd "$name"
-    if [[ "$name" == "YTUHD" ]]; then
-        make libvpx dav1d $make_extra
-    fi
+    case "$name" in
+        YTUHD)
+            make libvpx dav1d $make_extra
+            ;;
+        YTIcons)
+            # -Wincompatible-pointer-types from newer Theos/clang
+            if [[ -f Makefile ]] && ! grep -q 'incompatible-pointer-types' Makefile; then
+                sed -i '' 's/-fobjc-arc/-fobjc-arc -Wno-incompatible-pointer-types/' Makefile
+            fi
+            ;;
+    esac
     make clean package DEBUG=0 FINALPACKAGE=1 $make_extra
     mv packages/*.deb "$BUILD_DIR/$deb_name"
     cd ..
@@ -815,7 +863,11 @@ build_tweaks() {
         if [[ "$USE_PREBUILT_DEBS" == "true" ]] && [[ -f "$BUILD_DIR/autoflex.deb" ]]; then
             print_info "Skipping AutoFLEX build (using pre-built)"
         else
+            # -Wgnu-folding-constant from newer Theos/clang in vendored FLEX sources
             print_info "Building AutoFLEX..."
+            if [[ -f AutoFLEX/Makefile ]] && ! grep -q 'gnu-folding-constant' AutoFLEX/Makefile; then
+                sed -i '' 's/-Wno-unused-but-set-variable/-Wno-unused-but-set-variable -Wno-gnu-folding-constant/' AutoFLEX/Makefile
+            fi
             cd AutoFLEX
             chmod +x build.sh
             ./build.sh
@@ -945,6 +997,8 @@ main() {
     get_app_version
     get_latest_version
     if any_tweaks_enabled; then
+        ensure_xcode
+        ensure_build_tools
         ensure_sdk
     fi
     download_ytplus

@@ -47,8 +47,8 @@ echo "[Step 3/7] Installing build tools (wget, make, ldid, pipx)..."
 echo "   Installing wget..."
 brew install wget
 
-echo "   Installing make, ldid, and pipx..."
-brew install make ldid pipx
+echo "   Installing make, ldid, pipx, and meson..."
+brew install make ldid pipx meson
 
 #update path for new version of make
 echo 'export PATH="$(brew --prefix make)/libexec/gnubin:$PATH"' >> "$PROFILE"
@@ -64,8 +64,13 @@ THEOS_DIR="$HOME/theos"
 echo "   Creating Theos directory: $THEOS_DIR"
 mkdir -p "$THEOS_DIR"
 cd "$THEOS_DIR"
-echo "   Cloning Theos repository (this may take a moment)..."
-git clone --recursive https://github.com/theos/theos.git .
+if [ -d ".git" ]; then
+    echo "   Theos already exists. Pulling latest changes..."
+    git pull --recurse-submodules
+else
+    echo "   Cloning Theos repository (this may take a moment)..."
+    git clone --recursive https://github.com/theos/theos.git .
+fi
 echo "   Adding Theos to shell profile..."
 echo "export THEOS=\"$THEOS_DIR\"" >> "$PROFILE"
 echo 'export PATH=$THEOS/bin:$PATH' >> "$PROFILE"
@@ -131,6 +136,16 @@ source $PROFILE
 
 echo "1. System Tools:"
 echo "   Xcode CLI: $(xcode-select -p)"
+if [ -d "/Applications/Xcode.app/Contents/Developer" ]; then
+    if ! xcrun --sdk iphoneos --show-sdk-path &>/dev/null; then
+        echo "   ⚠️  iphoneos SDK not available (xcode-select may point to CLT, not Xcode)"
+        echo "   Fix: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer"
+    else
+        echo "   iphoneos SDK: $(xcrun --sdk iphoneos --show-sdk-path 2>/dev/null)"
+    fi
+else
+    echo "   ⚠️  Xcode.app not found — required for YTUHD (libvpx) builds"
+fi
 echo "   Homebrew: $(brew --version | head -n1)"
 echo "   Git: $(git --version)"
 echo "   wget: $(wget --version | head -n1)"

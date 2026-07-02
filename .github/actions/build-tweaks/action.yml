@@ -110,6 +110,9 @@ runs:
               cd "$dir_name"
               if [ "$dir_name" = "YTUHD" ]; then
                 make libvpx dav1d $make_extra
+              elif [ "$dir_name" = "YTIcons" ] && [ -f Makefile ] && ! grep -q 'incompatible-pointer-types' Makefile; then
+                # -Wincompatible-pointer-types from newer Theos/clang
+                sed -i '' 's/-fobjc-arc/-fobjc-arc -Wno-incompatible-pointer-types/' Makefile
               fi
               make clean package DEBUG=0 FINALPACKAGE=1 $make_extra
               mv packages/*.deb "${{ inputs.workspace }}/$output_file"
@@ -123,7 +126,11 @@ runs:
         # AutoFLEX bundles FLEX sources via build.sh
         if [ "$ENABLE_AUTOFLEX" = "true" ]; then
           if [ "$CACHE_AUTOFLEX_HIT" != "true" ]; then
+            # -Wgnu-folding-constant from newer Theos/clang in vendored FLEX sources
             echo "Building AutoFLEX..."
+            if [ -f AutoFLEX/Makefile ] && ! grep -q 'gnu-folding-constant' AutoFLEX/Makefile; then
+              sed -i '' 's/-Wno-unused-but-set-variable/-Wno-unused-but-set-variable -Wno-gnu-folding-constant/' AutoFLEX/Makefile
+            fi
             cd AutoFLEX
             chmod +x build.sh
             ./build.sh

@@ -1,2 +1,15 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Normalize text files to LF in the repo and on checkout
+* text=auto eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+
+# GitHub Actions and config
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+
+# Binary assets
+*.{jpg,jpeg,png,gif,webp,ico,bmp,svg} binary
+*.{deb,dmg,ipa,zip,a} binary

@@ -1,9 +1,10 @@
-# YouTube Plus (YTweaks Fork)
+# ‎<p align="left"><img src="./Resources/repoHeader.png" width="1000"></p>
+
+
+
 [YouTube Plus](https://github.com/dayanch96/YTLite) with added plugins.
 
 v20.10.4 is ***strongly*** recommended for proper compatibility
-
-[NOTE] Some users are reporting a prompt to update, blocking app usage on 20.10.4. This is a known issue and is being looked into
 
 This repo focuses on simplifying the build process of YouTube Plus, and adding more optional tweaks to bundle with it (specifically [YTweaks](https://github.com/fosterbarnes/YTweaks)). No changes have been made to the YouTube Plus .deb itself, just the tweaks that get packaged with it. 
 
@@ -15,9 +16,7 @@ YTweaks added settings:
 - **Disable floating miniplayer:** Restores the old miniplayer by disabling the floating miniplayer.
 - **Virtual fullscreen bezels:** Adds invisible touch-safe zones on black bars to prevent accidental taps and skips.
 - **Fix Casting** - Attempts to fix casting by changing some A/B flags. Only works on v20.10.4 or lower
-
-Experimental planned features
-- **Hide AI Summaries:** Hides AI summaries that appear in the feed.
+- **Hide AI Summaries:** Hides AI summaries that appear in the home feed.
 
 
 Added tweaks:
@@ -57,7 +56,7 @@ If you plan on testing, adding tweaks that aren't integrated with this repo, mak
 <em>We cannot provide this file due to legal reasons.</em><br>
 
 - Upload the decrypted IPA to a file hosting service (e.g., litterbox.catbox.moe or Dropbox).<br>
-<em>If you use Dropbox, change the end of the URL from <code>dl=0</code> to <code>dl=1</code>.</em><br>
+<em>You can't skip this step, copy/pasting a link from a decrypt IPA site will not work.</em><br>
 
 - Paste the direct download link to the decrypted IPA into the provided field.<br>
 <em><strong>NOTE:</strong> Make sure to provide a direct download link to the file, not a webpage. Otherwise, the process will fail.</em><br>
@@ -273,8 +272,8 @@ Fill out an [issue form](https://github.com/fosterbarnes/YTPlusYTweaks/issues) w
 ## Supported Versions
 <ul>
     <li><strong>Recommended:</strong> <em>20.10.4</em></li>
-   <li><strong>Latest confirmed:</strong> <em>21.24.3</em></li>
-   <li><strong>Date tested:</strong> <em>June 17, 2026</em></li>
+   <li><strong>Latest confirmed:</strong> <em>21.26.4</em></li>
+   <li><strong>Date tested:</strong> <em>7/3/26</em></li>
    <li><strong>YouTube Plus:</strong> <em>5.2.1</em></li>
 </ul>
 
