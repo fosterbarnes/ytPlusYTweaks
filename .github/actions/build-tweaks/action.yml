@@ -148,6 +148,10 @@ runs:
               elif [ "$dir_name" = "YTIcons" ] && [ -f Makefile ] && ! grep -q 'incompatible-pointer-types' Makefile; then
                 # -Wincompatible-pointer-types from newer Theos/clang
                 sed -i '' 's/-fobjc-arc/-fobjc-arc -Wno-incompatible-pointer-types/' Makefile
+              elif [ "$dir_name" = "YouFixPlaybackIssues" ] && [ -f Makefile ]; then
+                # Replace hardcoded SDK version in TARGET so it uses whatever SDK is installed
+                SDK_VER=$(basename "$(ls -d "$THEOS/sdks/iPhoneOS"*.sdk | head -1)" | sed 's/iPhoneOS\(.*\)\.sdk/\1/')
+                sed -i '' "s/TARGET := iphone:clang:[0-9.]*:/TARGET := iphone:clang:${SDK_VER}:/" Makefile
               fi
               make clean package DEBUG=0 FINALPACKAGE=1 $make_extra
               mv packages/*.deb "${{ inputs.workspace }}/$output_file"
