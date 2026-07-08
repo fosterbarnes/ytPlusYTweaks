@@ -70,6 +70,30 @@ on:
         required: true
         default: true
 
+      enable_youmute:
+        description: "Build YouMute"
+        type: boolean
+        required: true
+        default: true
+
+      enable_youloop:
+        description: "Build YouLoop"
+        type: boolean
+        required: true
+        default: true
+
+      enable_youspeed:
+        description: "Build YouSpeed"
+        type: boolean
+        required: true
+        default: true
+
+      enable_yougetcaption:
+        description: "Build YouGetCaption"
+        type: boolean
+        required: true
+        default: true
+
       tweak_version:
         description: "The version of YTLite to use. E.g. 5.2b3 (optional - leave empty to use latest release)"
         default: "5.2.1"
@@ -126,7 +150,11 @@ jobs:
              [ "${{ inputs.enable_yticons }}" = "true" ] || \
              [ "${{ inputs.enable_yougroupsettings }}" = "true" ] || \
              [ "${{ inputs.enable_gonerino }}" = "true" ] || \
-             [ "${{ inputs.enable_autoflex }}" = "true" ]; then
+             [ "${{ inputs.enable_autoflex }}" = "true" ] || \
+             [ "${{ inputs.enable_youmute }}" = "true" ] || \
+             [ "${{ inputs.enable_youloop }}" = "true" ] || \
+             [ "${{ inputs.enable_youspeed }}" = "true" ] || \
+             [ "${{ inputs.enable_yougetcaption }}" = "true" ]; then
             echo "enabled=true" >> $GITHUB_OUTPUT
             echo "Tweaks are enabled"
           else
@@ -149,6 +177,10 @@ jobs:
           enable_demc: ${{ steps.check_tweaks.outputs.enabled == 'true' && inputs.enable_demc || 'false' }}
           enable_gonerino: ${{ steps.check_tweaks.outputs.enabled == 'true' && inputs.enable_gonerino || 'false' }}
           enable_autoflex: ${{ steps.check_tweaks.outputs.enabled == 'true' && inputs.enable_autoflex || 'false' }}
+          enable_youmute: ${{ steps.check_tweaks.outputs.enabled == 'true' && inputs.enable_youmute || 'false' }}
+          enable_youloop: ${{ steps.check_tweaks.outputs.enabled == 'true' && inputs.enable_youloop || 'false' }}
+          enable_youspeed: ${{ steps.check_tweaks.outputs.enabled == 'true' && inputs.enable_youspeed || 'false' }}
+          enable_yougetcaption: ${{ steps.check_tweaks.outputs.enabled == 'true' && inputs.enable_yougetcaption || 'false' }}
 
       - name: Cache Theos
         if: steps.check_tweaks.outputs.enabled == 'true'
@@ -213,6 +245,10 @@ jobs:
           enable_demc: ${{ inputs.enable_demc }}
           enable_gonerino: ${{ inputs.enable_gonerino }}
           enable_autoflex: ${{ inputs.enable_autoflex }}
+          enable_youmute: ${{ inputs.enable_youmute }}
+          enable_youloop: ${{ inputs.enable_youloop }}
+          enable_youspeed: ${{ inputs.enable_youspeed }}
+          enable_yougetcaption: ${{ inputs.enable_yougetcaption }}
           sdk_version: ${{ inputs.sdk_version }}
           youpip_commit: ${{ steps.commit_hashes.outputs.youpip }}
           ytuhd_commit: ${{ steps.commit_hashes.outputs.ytuhd }}
@@ -227,6 +263,10 @@ jobs:
           autoflex_commit: ${{ steps.commit_hashes.outputs.autoflex }}
           flex_commit: ${{ steps.commit_hashes.outputs.flex }}
           ytvo_commit: ${{ steps.commit_hashes.outputs.ytvo }}
+          youmute_commit: ${{ steps.commit_hashes.outputs.youmute }}
+          youloop_commit: ${{ steps.commit_hashes.outputs.youloop }}
+          youspeed_commit: ${{ steps.commit_hashes.outputs.youspeed }}
+          yougetcaption_commit: ${{ steps.commit_hashes.outputs.yougetcaption }}
 
       - name: Clone tweaks
         if: steps.check_tweaks.outputs.enabled == 'true'
@@ -243,6 +283,10 @@ jobs:
           enable_demc: ${{ inputs.enable_demc }}
           enable_gonerino: ${{ inputs.enable_gonerino }}
           enable_autoflex: ${{ inputs.enable_autoflex }}
+          enable_youmute: ${{ inputs.enable_youmute }}
+          enable_youloop: ${{ inputs.enable_youloop }}
+          enable_youspeed: ${{ inputs.enable_youspeed }}
+          enable_yougetcaption: ${{ inputs.enable_yougetcaption }}
           cache_youpip_hit: ${{ steps.cache_tweaks_step.outputs.cache_youpip_hit }}
           cache_ytuhd_hit: ${{ steps.cache_tweaks_step.outputs.cache_ytuhd_hit }}
           cache_ryd_hit: ${{ steps.cache_tweaks_step.outputs.cache_ryd_hit }}
@@ -255,6 +299,10 @@ jobs:
           cache_gonerino_hit: ${{ steps.cache_tweaks_step.outputs.cache_gonerino_hit }}
           cache_autoflex_hit: ${{ steps.cache_tweaks_step.outputs.cache_autoflex_hit }}
           cache_ytvo_hit: ${{ steps.cache_tweaks_step.outputs.cache_ytvo_hit }}
+          cache_youmute_hit: ${{ steps.cache_tweaks_step.outputs.cache_youmute_hit }}
+          cache_youloop_hit: ${{ steps.cache_tweaks_step.outputs.cache_youloop_hit }}
+          cache_youspeed_hit: ${{ steps.cache_tweaks_step.outputs.cache_youspeed_hit }}
+          cache_yougetcaption_hit: ${{ steps.cache_tweaks_step.outputs.cache_yougetcaption_hit }}
           workspace: ${{ github.workspace }}
 
       - name: Build tweaks
@@ -272,6 +320,10 @@ jobs:
           enable_demc: ${{ inputs.enable_demc }}
           enable_gonerino: ${{ inputs.enable_gonerino }}
           enable_autoflex: ${{ inputs.enable_autoflex }}
+          enable_youmute: ${{ inputs.enable_youmute }}
+          enable_youloop: ${{ inputs.enable_youloop }}
+          enable_youspeed: ${{ inputs.enable_youspeed }}
+          enable_yougetcaption: ${{ inputs.enable_yougetcaption }}
           cache_youpip_hit: ${{ steps.cache_tweaks_step.outputs.cache_youpip_hit }}
           cache_ytuhd_hit: ${{ steps.cache_tweaks_step.outputs.cache_ytuhd_hit }}
           cache_ryd_hit: ${{ steps.cache_tweaks_step.outputs.cache_ryd_hit }}
@@ -284,6 +336,10 @@ jobs:
           cache_gonerino_hit: ${{ steps.cache_tweaks_step.outputs.cache_gonerino_hit }}
           cache_autoflex_hit: ${{ steps.cache_tweaks_step.outputs.cache_autoflex_hit }}
           cache_ytvo_hit: ${{ steps.cache_tweaks_step.outputs.cache_ytvo_hit }}
+          cache_youmute_hit: ${{ steps.cache_tweaks_step.outputs.cache_youmute_hit }}
+          cache_youloop_hit: ${{ steps.cache_tweaks_step.outputs.cache_youloop_hit }}
+          cache_youspeed_hit: ${{ steps.cache_tweaks_step.outputs.cache_youspeed_hit }}
+          cache_yougetcaption_hit: ${{ steps.cache_tweaks_step.outputs.cache_yougetcaption_hit }}
           theos_path: ${{ github.workspace }}/theos
           workspace: ${{ github.workspace }}
 
@@ -330,6 +386,10 @@ jobs:
           [ -f "demc.deb" ] && mv "demc.deb" "DontEatMyContent.deb"
           [ -f "gonerino.deb" ] && mv "gonerino.deb" "Gonerino.deb"
           [ -f "autoflex.deb" ] && mv "autoflex.deb" "AutoFLEX.deb"
+          [ -f "youmute.deb" ] && mv "youmute.deb" "YouMute.deb"
+          [ -f "youloop.deb" ] && mv "youloop.deb" "YouLoop.deb"
+          [ -f "youspeed.deb" ] && mv "youspeed.deb" "YouSpeed.deb"
+          [ -f "yougetcaption.deb" ] && mv "yougetcaption.deb" "YouGetCaption.deb"
           echo "Renamed DEB files to their full names"
 
       - name: Zip DEBs

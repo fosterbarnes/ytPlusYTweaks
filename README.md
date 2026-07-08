@@ -2,13 +2,13 @@
 
 
 
-[YouTube Plus](https://github.com/dayanch96/YTLite) with added plugins.
+[YouTube Plus](https://github.com/dayanch96/YTLite) with added plugins and fixes.
 
 v20.10.4 is ***strongly*** recommended for proper compatibility
 
-This repo focuses on simplifying the build process of YouTube Plus, and adding more optional tweaks to bundle with it (specifically [YTweaks](https://github.com/fosterbarnes/YTweaks)). No changes have been made to the YouTube Plus .deb itself, just the tweaks that get packaged with it. 
+This project focuses on bundling YouTube Plus with [YTweaks](https://github.com/fosterbarnes/YTweaks) and other various tweaks. 
 
-When building the app, the latest stable YouTube Plus .deb is downloaded from the original repo, then other tweaks are built from source. All tweaks are then injected into your IPA.
+When building the app, the latest patches to YouTube Plus, YTweaks, theos and all other included tweaks are cloned and built from source. All tweaks are then injected into your IPA. If you follow either build tutorial, you'll automatically end up with the latest tweaks and patches.
 
 YTweaks added settings:
 - **Force Fullscreen Direction (Button)**: Choose Off, Left, Right, or Portrait for the fullscreen button.
@@ -28,6 +28,10 @@ Added tweaks:
 - [YouGroupSettings](https://github.com/fosterbarnes/YouGroupSettings)
 - [Gonerino](https://github.com/fosterbarnes/YGonerino)
 - [AutoFLEX](https://github.com/pwnless/AutoFLEX)
+- [YouMute](https://github.com/PoomSmart/YouMute)
+- [YouLoop](https://github.com/bhackel/YouLoop)
+- [YouSpeed](https://github.com/PoomSmart/YouSpeed)
+- [YouGetCaption](https://github.com/PoomSmart/YouGetCaption)
 
 Original repo: https://github.com/dayanch96/YTLite
 
@@ -120,92 +124,68 @@ fi
 
 brew install git
 cd "$HOME/Desktop"
-git clone --filter=blob:none --no-checkout https://github.com/fosterbarnes/YTPlusYTweaks
-cd YTPlusYTweaks || exit
+git clone --filter=blob:none --no-checkout https://github.com/fosterbarnes/ytPlusYTweaks
+cd ytPlusYTweaks || exit
 git sparse-checkout init --no-cone
 git sparse-checkout set \
     'deb/*' \
     'ipa/*' \
     'build.sh' \
-    'build_dependencies.sh' \
+    'buildDependencies.sh' \
     'README.md'
 git checkout main
 ```
 2. Run the build dependencies script
 
 ```bash
-./build_dependencies.sh
+./buildDependencies.sh
 ```
 3. Run the build script to build your app
 
-Build with a URL to a decrypted IPA
+Option A: Place a decrypted IPA into 'ytPlusYTweaks/ipa'. Build with default included tweaks.
+
 ```bash
-./build.sh --ipa URL_HERE
+./build.sh
 ```
 
-Build with the IPA in 'YTPlusYTweaks/ipa'
+Option B: Use a direct link to an IPA. Build with default included tweaks.
+
 ```bash
-./build.sh --ipa
+./build.sh -ipa <URL> 
 ```
 
-Build with any pre-built DEBs in 'YTPlusYTweaks/deb'
+Option C: Build with your own debs from 'ytPlusYTweaks/deb'
+
 ```bash
-./build.sh --ipa --deb
+./build.sh -myDebs
 ```
 To list all options:
 ```bash
 ./build.sh -h
 ```
+
 ```bash
-YTPlusYTweaks Build Script
+Usage: ./build.sh [options]
 
-Usage: $0 --ipa [URL] [options]
+Default (no flags): builds using the IPA in the ipa/ directory, integrating all default integrated tweaks.
+By default, all tweaks are cloned and built from source. Use '--myDebs' to use your local files in the deb/ directory.
 
-IPAs Source:
-    --ipa [URL]                  If URL provided: download IPA from URL (saves to ipa/)
-                                  If no URL: use local IPA from ipa/ folder (looks for *.ipa files)
-
-Optional Arguments:
-    --deb                        Use pre-built .deb files from deb/ folder. Otherwise, build from source.
-    --tweak-version <version>    Version of YTLite tweak (default: 5.2b4)
-    --display-name <name>        App display name (default: YouTube)
-    --bundle-id <id>             Bundle ID (default: com.google.ios.youtube)
-
-Tweak Integration Flags:
-    --enable-all                 Enable all tweaks
-    --disable-all                Disable all tweaks
-    
-    --enable-youpip              YouPiP (default: true)
-    --enable-ytuhd               YTUHD (default: true)
-    --enable-yq                  YouQuality (default: true)
-    --enable-ryd                 Return YouTube Dislikes (default: true)
-    --enable-demc                DontEatMyContent (default: true)
-    --enable-ytabconfig          YTABConfig (default: true)
-    --enable-ytweaks             YTweaks (default: true)
-    --enable-yougroupsettings    Settings (default: true)
-    --enable-yticons             YTIcons (default: false)
-    --enable-gonerino            Gonerino (default: true)
-    --enable-autoflex            AutoFLEX (default: false)
-
-    --disable-youpip             YouPiP
-    --disable-ytuhd              YTUHD
-    --disable-yq                 YouQuality
-    --disable-ryd                Return YouTube Dislikes
-    --disable-demc               DontEatMyContent
-    --disable-ytabconfig         YTABConfig
-    --disable-ytweaks            YTweaks
-    --disable-yougroupsettings   YouGroupSettings
-    --disable-yticons            YTIcons
-    --disable-gonerino           Gonerino
-    --disable-autoflex           AutoFLEX
-
-Other Options:
-    -h, --help                   Show this help message
+Options:
+    -ipa <URL>                          Download IPA from URL to ipa/ before building
+    -myDebs, -md                        Use existing .deb files in deb/ 
+    -sdk <version>                      iOS SDK version: 16.5, 17.5, or 18.6 (default: 16.5)
+    -ytPlusVersion, -ytpv <version>     Version of YTPlus tweak (default: auto-detect latest)
+    -displayName, -dn <name>            App display name (default: YouTube)
+    -bundleID, -bid <id>                Bundle ID (default: com.google.ios.youtube)
+    -test                               Quickly change display name and bundle ID when testing
+                                        Display Name: YTest | Bundle ID: com.google.ios.youtube2
+    -help, -h                           Show this help message
 
 Examples:
-    $0 --ipa https://example.com/youtube.ipa
-    $0 --ipa --deb --disable-all
-    $0 --ipa --disable-yticons --enable-ytweaks
+    ./build.sh
+    ./build.sh --ipa https://example.com/youtube.ipa
+    ./build.sh --myDebs
+    ./build.sh --sdk 17.5 --displayName "YT"
 ```
 </details>
 
@@ -245,22 +225,6 @@ Examples:
     </tr>
   </table>
 </details>
-
-## YouTube Plus Features
-<li>Download videos, audio (including audio track selection), thumbnails, posts, and profile pictures</li>
-<li>Copy video, comment, and post information</li>
-<li>Interface customization: Remove feed elements, reorder tabs, enable OLED mode, and as use Shorts-only mode</li>
-<li>Player settings: Gestures, default quality, preferred audio track</li>
-<li>Save, Load and Restore settings. Clear cache once or automatically on app startup</li>
-<li>Built-in SponsorBlock</li>
-<li>And much, much more</li>
-<br>
-
-
-**YouTube Plus preferences can be found in the YouTube Settings**
-
-**All contributors are listed in the Contributors section**
-**Used open-source libraries are listed in the Open Source Libraries section**
 
 ## Issues, Bugs & Feature Requests
 Fill out an [issue form](https://github.com/fosterbarnes/YTPlusYTweaks/issues) with the applicable option selected and fill out all required info.
@@ -354,22 +318,48 @@ Fill out an [issue form](https://github.com/fosterbarnes/YTPlusYTweaks/issues) w
   <p>Source code and additional information are available <a href="https://github.com/pwnless/AutoFLEX">in pwnless's GitHub repository</a>.</p>
 </details>
 
+<details>
+  <summary>YouMute</summary>
+  <p>Mutes/unmutes videos on iOS YouTube app faster. Developed by <a href="https://github.com/PoomSmart">PoomSmart</a> 
+  <p>Source code and additional information are available <a href="https://github.com/PoomSmart/YouMute">in PoomSmart's GitHub repository</a>.</p>
+</details>
+
+<details>
+  <summary>YouSpeed</summary>
+  <p>Views/changes video speed in iOS YouTube app faster. Developed by <a href="https://github.com/PoomSmart">PoomSmart</a> 
+  <p>Source code and additional information are available <a href="https://github.com/PoomSmart/YouSpeed">in PoomSmart's GitHub repository</a>.</p>
+</details>
+
+<details>
+  <summary>YouGetCaption</summary>
+  <p>Adds a player button to enable/disable looping on the current video. Developed by <a href="https://github.com/bhackel">bhackel</a> 
+  <p>Source code and additional information are available <a href="https://github.com/bhackel/YouGetCaption">in bhackel's GitHub repository</a>.</p>
+</details>
+
+<details>
+  <summary>YouLoop</summary>
+  <p>Views and copies captions from YouTube videos. Developed by <a href="https://github.com/PoomSmart">PoomSmart</a> 
+  <p>Source code and additional information are available <a href="https://github.com/PoomSmart/YouGetCaption">in PoomSmart's GitHub repository</a>.</p>
+</details>
+
 ## Credits
 Thank you to everyone that made this project possible! This project would not exist without the existing tools made by these developers. I really appreciate your work :)
 
 [dayanch96](https://github.com/dayanch96) - YTLite
 
-[PoomSmart](https://github.com/PoomSmart) - YouPiP, YTUHD, Return YouTube Dislikes, YouQuality, YTABConfig, YTIcons, YouGroupSettings
+[PoomSmart](https://github.com/PoomSmart) - YouPiP, YTUHD, Return YouTube Dislikes, YouQuality, YTABConfig, YTIcons, YouGroupSettings, YouMute, YouSpeed, YouGetCaption
 
 [therealFoxster](https://github.com/therealFoxster) - DontEatMyContent
 
-[castdrian](https://github.com/castdrian/Gonerino) - Gonerino (original), [fosterbarnes](https://github.com/fosterbarnes/YGonerino) - YGonerino fork
+[castdrian](https://github.com/castdrian/Gonerino) - Gonerino
 
 [pwnless](https://github.com/pwnless/AutoFLEX) - AutoFLEX
 
 [theos](https://github.com/theos) - theos, SDKs
 
 [Tonwalter888](https://github.com/Tonwalter888/) - YTUHD, SDKs
+
+[bhackel](https://github.com/bhackel/) - YouLoop
 
 ## Join the Telegram channel for more info
 

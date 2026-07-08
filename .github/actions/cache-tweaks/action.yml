@@ -23,6 +23,14 @@ inputs:
     required: true
   enable_autoflex:
     required: true
+  enable_youmute:
+    required: true
+  enable_youloop:
+    required: true
+  enable_youspeed:
+    required: true
+  enable_yougetcaption:
+    required: true
   sdk_version:
     required: true
   youpip_commit:
@@ -50,6 +58,14 @@ inputs:
   flex_commit:
     required: false
   ytvo_commit:
+    required: false
+  youmute_commit:
+    required: false
+  youloop_commit:
+    required: false
+  youspeed_commit:
+    required: false
+  yougetcaption_commit:
     required: false
 
 outputs:
@@ -89,6 +105,18 @@ outputs:
   cache_ytvo_hit:
     description: "Cache hit status for YTVideoOverlay"
     value: ${{ steps.cache_ytvo.outputs.cache-hit }}
+  cache_youmute_hit:
+    description: "Cache hit status for YouMute"
+    value: ${{ steps.cache_youmute.outputs.cache-hit }}
+  cache_youloop_hit:
+    description: "Cache hit status for YouLoop"
+    value: ${{ steps.cache_youloop.outputs.cache-hit }}
+  cache_youspeed_hit:
+    description: "Cache hit status for YouSpeed"
+    value: ${{ steps.cache_youspeed.outputs.cache-hit }}
+  cache_yougetcaption_hit:
+    description: "Cache hit status for YouGetCaption"
+    value: ${{ steps.cache_yougetcaption.outputs.cache-hit }}
 
 runs:
   using: "composite"
@@ -188,3 +216,35 @@ runs:
       with:
         path: ytvo.deb
         key: ytvo-${{ inputs.ytvo_commit }}-sdk${{ inputs.sdk_version }}
+
+    - name: Cache YouMute
+      if: inputs.enable_youmute == 'true'
+      id: cache_youmute
+      uses: actions/cache@v6.1.0
+      with:
+        path: youmute.deb
+        key: youmute-${{ inputs.youmute_commit }}-sdk${{ inputs.sdk_version }}
+
+    - name: Cache YouLoop
+      if: inputs.enable_youloop == 'true'
+      id: cache_youloop
+      uses: actions/cache@v6.1.0
+      with:
+        path: youloop.deb
+        key: youloop-${{ inputs.youloop_commit }}-sdk${{ inputs.sdk_version }}
+
+    - name: Cache YouSpeed
+      if: inputs.enable_youspeed == 'true'
+      id: cache_youspeed
+      uses: actions/cache@v6.1.0
+      with:
+        path: youspeed.deb
+        key: youspeed-${{ inputs.youspeed_commit }}-sdk${{ inputs.sdk_version }}
+
+    - name: Cache YouGetCaption
+      if: inputs.enable_yougetcaption == 'true'
+      id: cache_yougetcaption
+      uses: actions/cache@v6.1.0
+      with:
+        path: yougetcaption.deb
+        key: yougetcaption-${{ inputs.yougetcaption_commit }}-sdk${{ inputs.sdk_version }}

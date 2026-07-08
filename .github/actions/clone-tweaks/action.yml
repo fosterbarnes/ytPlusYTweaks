@@ -23,6 +23,14 @@ inputs:
     required: true
   enable_autoflex:
     required: true
+  enable_youmute:
+    required: true
+  enable_youloop:
+    required: true
+  enable_youspeed:
+    required: true
+  enable_yougetcaption:
+    required: true
   cache_youpip_hit:
     required: true
   cache_ytuhd_hit:
@@ -46,6 +54,14 @@ inputs:
   cache_autoflex_hit:
     required: true
   cache_ytvo_hit:
+    required: true
+  cache_youmute_hit:
+    required: true
+  cache_youloop_hit:
+    required: true
+  cache_youspeed_hit:
+    required: true
+  cache_yougetcaption_hit:
     required: true
   workspace:
     required: true
@@ -80,6 +96,14 @@ runs:
         CACHE_GONERINO_HIT: ${{ inputs.cache_gonerino_hit }}
         CACHE_AUTOFLEX_HIT: ${{ inputs.cache_autoflex_hit }}
         CACHE_YTVO_HIT: ${{ inputs.cache_ytvo_hit }}
+        ENABLE_YOUMUTE: ${{ inputs.enable_youmute }}
+        ENABLE_YOULOOP: ${{ inputs.enable_youloop }}
+        ENABLE_YOUSPEED: ${{ inputs.enable_youspeed }}
+        ENABLE_YOUGETCAPTION: ${{ inputs.enable_yougetcaption }}
+        CACHE_YOUMUTE_HIT: ${{ inputs.cache_youmute_hit }}
+        CACHE_YOULOOP_HIT: ${{ inputs.cache_youloop_hit }}
+        CACHE_YOUSPEED_HIT: ${{ inputs.cache_youspeed_hit }}
+        CACHE_YOUGETCAPTION_HIT: ${{ inputs.cache_yougetcaption_hit }}
       run: |
         cd ${{ inputs.workspace }}
         
@@ -96,6 +120,10 @@ runs:
           "ENABLE_DEMC|CACHE_DEMC_HIT|https://github.com/therealFoxster/DontEatMyContent.git|DontEatMyContent|--recurse-submodules"
           "ENABLE_GONERINO|CACHE_GONERINO_HIT|https://github.com/fosterbarnes/YGonerino.git|Gonerino|"
           "ENABLE_AUTOFLEX|CACHE_AUTOFLEX_HIT|https://github.com/pwnless/AutoFLEX.git|AutoFLEX|"
+          "ENABLE_YOUMUTE|CACHE_YOUMUTE_HIT|https://github.com/PoomSmart/YouMute.git|YouMute|"
+          "ENABLE_YOULOOP|CACHE_YOULOOP_HIT|https://github.com/bhackel/YouLoop.git|YouLoop|"
+          "ENABLE_YOUSPEED|CACHE_YOUSPEED_HIT|https://github.com/PoomSmart/YouSpeed.git|YouSpeed|"
+          "ENABLE_YOUGETCAPTION|CACHE_YOUGETCAPTION_HIT|https://github.com/PoomSmart/YouGetCaption.git|YouGetCaption|"
         )
         
         for tweak in "${tweaks[@]}"; do

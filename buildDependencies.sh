@@ -1,5 +1,5 @@
 echo "=========================================="
-echo "Build Dependencies Setup Script"
+echo "ytPlusYTweaks Build Dependencies Setup"
 echo "=========================================="
 echo ""
 
@@ -8,7 +8,6 @@ echo "[Step 1/7] Installing Homebrew..."
 
 echo ""
 echo "[Step 2/7] Configuring Homebrew..."
-#detect homebrew path (Apple Silicon uses /opt/homebrew, Intel uses /usr/local)
 if [ -f "/opt/homebrew/bin/brew" ]; then
     BREW_PATH="/opt/homebrew/bin/brew"
     echo "   Detected Apple Silicon Homebrew installation"
@@ -16,25 +15,15 @@ elif [ -f "/usr/local/bin/brew" ]; then
     BREW_PATH="/usr/local/bin/brew"
     echo "   Detected Intel Homebrew installation"
 else
-    # Try to find brew in PATH after installation
     BREW_PATH=$(which brew)
-    if [ -z "$BREW_PATH" ]; then
-        echo "Error: Could not find Homebrew installation"
-        exit 1
-    fi
+    [ -z "$BREW_PATH" ] && { echo "Error: Could not find Homebrew installation"; exit 1; }
     echo "   Found Homebrew in PATH: $BREW_PATH"
 fi
 
-#add to shell profile (detect which profile to use)
-if [ -f "$HOME/.zprofile" ]; then
-    PROFILE="$HOME/.zprofile"
-elif [ -f "$HOME/.zshrc" ]; then
-    PROFILE="$HOME/.zshrc"
-elif [ -f "$HOME/.bash_profile" ]; then
-    PROFILE="$HOME/.bash_profile"
-else
-    PROFILE="$HOME/.zprofile"
-fi
+if [ -f "$HOME/.zprofile" ]; then PROFILE="$HOME/.zprofile"
+elif [ -f "$HOME/.zshrc" ]; then PROFILE="$HOME/.zshrc"
+elif [ -f "$HOME/.bash_profile" ]; then PROFILE="$HOME/.bash_profile"
+else PROFILE="$HOME/.zprofile"; fi
 echo "   Using shell profile: $PROFILE"
 
 echo >> "$PROFILE"
@@ -50,11 +39,9 @@ brew install wget
 echo "   Installing make, ldid, pipx, and meson..."
 brew install make ldid pipx meson
 
-#update path for new version of make
 echo 'export PATH="$(brew --prefix make)/libexec/gnubin:$PATH"' >> "$PROFILE"
 source "$PROFILE"
 
-#pipx to path
 echo "   Configuring pipx..."
 pipx ensurepath
 
@@ -83,41 +70,27 @@ cd "$THEOS_DIR"
 rm -rf sdks
 mkdir -p sdks
 
-echo "   [1/3] iPhoneOS16.5.sdk (theos/sdks)..."
-(
-    tmp=$(mktemp -d)
-    cd "$tmp"
-    git clone --quiet -n --depth=1 --filter=tree:0 https://github.com/theos/sdks/
-    cd sdks
-    git sparse-checkout set --no-cone iPhoneOS16.5.sdk
-    git checkout
-    mv *.sdk "$THEOS_DIR/sdks/"
-    rm -rf "$tmp"
+SDKS=(
+    "iPhoneOS16.5.sdk|https://github.com/theos/sdks/|sdks"
+    "iPhoneOS17.5.sdk|https://github.com/Tonwalter888/iOS-SDKs|iOS-SDKs"
+    "iPhoneOS18.6.sdk|https://github.com/Tonwalter888/iOS-SDKs|iOS-SDKs"
 )
-
-echo "   [2/3] iPhoneOS17.5.sdk (Tonwalter888/iOS-SDKs)..."
-(
-    tmp=$(mktemp -d)
-    cd "$tmp"
-    git clone --quiet --no-tags --single-branch --depth=1 -n --filter=tree:0 https://github.com/Tonwalter888/iOS-SDKs
-    cd iOS-SDKs
-    git sparse-checkout set --no-cone iPhoneOS17.5.sdk
-    git checkout
-    mv *.sdk "$THEOS_DIR/sdks/"
-    rm -rf "$tmp"
-)
-
-echo "   [3/3] iPhoneOS18.6.sdk (Tonwalter888/iOS-SDKs)..."
-(
-    tmp=$(mktemp -d)
-    cd "$tmp"
-    git clone --quiet --no-tags --single-branch --depth=1 -n --filter=tree:0 https://github.com/Tonwalter888/iOS-SDKs
-    cd iOS-SDKs
-    git sparse-checkout set --no-cone iPhoneOS18.6.sdk
-    git checkout
-    mv *.sdk "$THEOS_DIR/sdks/"
-    rm -rf "$tmp"
-)
+n=1
+for spec in "${SDKS[@]}"; do
+    IFS='|' read -r sdk repo repoDir <<< "$spec"
+    echo "   [$n/3] $sdk ($repo)..."
+    (
+        tmp=$(mktemp -d)
+        cd "$tmp"
+        git clone --quiet --no-tags --single-branch --depth=1 -n --filter=tree:0 "$repo"
+        cd "$repoDir"
+        git sparse-checkout set --no-cone "$sdk"
+        git checkout
+        mv *.sdk "$THEOS_DIR/sdks/"
+        rm -rf "$tmp"
+    )
+    ((n++))
+done
 echo "   Done! Installed $(ls "$THEOS_DIR/sdks/" | wc -l | xargs) SDK(s)"
 
 echo ""
@@ -126,25 +99,24 @@ echo "   Installing Cyan via pipx..."
 pipx install --force https://github.com/asdfzxcvbn/pyzule-rw/archive/main.zip
 echo "   Done!"
 
-
 echo ""
 echo "[Step 7/7] Verifying installation..."
 echo ""
 echo "=== Build Environment Test ==="
 echo ""
-source $PROFILE
+source "$PROFILE"
 
 echo "1. System Tools:"
 echo "   Xcode CLI: $(xcode-select -p)"
 if [ -d "/Applications/Xcode.app/Contents/Developer" ]; then
     if ! xcrun --sdk iphoneos --show-sdk-path &>/dev/null; then
-        echo "   ⚠️  iphoneos SDK not available (xcode-select may point to CLT, not Xcode)"
+        echo "   WARNING: iphoneos SDK not available (xcode-select may point to CLT, not Xcode)"
         echo "   Fix: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer"
     else
         echo "   iphoneos SDK: $(xcrun --sdk iphoneos --show-sdk-path 2>/dev/null)"
     fi
 else
-    echo "   ⚠️  Xcode.app not found — required for YTUHD (libvpx) builds"
+    echo "   WARNING: Xcode.app not found — required for YTUHD (libvpx) builds"
 fi
 echo "   Homebrew: $(brew --version | head -n1)"
 echo "   Git: $(git --version)"
@@ -160,19 +132,19 @@ echo ""
 echo "3. Theos:"
 echo "   THEOS: $THEOS"
 if [ -d "$THEOS" ]; then
-    echo "   Theos exists: ✓"
+    echo "   Theos exists: yes"
     echo "   SDKs installed:"
     ls "$THEOS/sdks/" 2>/dev/null | sed 's/^/     - /' || echo "     (none)"
 else
-    echo "   Theos exists: ✗"
+    echo "   Theos exists: no"
 fi
 echo ""
 
 echo "4. Cyan:"
 if command -v cyan &> /dev/null; then
-    echo "   Cyan installed: ✓"
+    echo "   Cyan installed: yes"
 else
-    echo "   Cyan installed: ✗ (Terminal may need to be restarted for changes to take effect)"
+    echo "   Cyan installed: no (Terminal may need to be restarted for changes to take effect)"
 fi
 echo ""
 

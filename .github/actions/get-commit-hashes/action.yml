@@ -23,6 +23,14 @@ inputs:
     required: true
   enable_autoflex:
     required: true
+  enable_youmute:
+    required: true
+  enable_youloop:
+    required: true
+  enable_youspeed:
+    required: true
+  enable_yougetcaption:
+    required: true
 
 outputs:
   youpip:
@@ -64,6 +72,18 @@ outputs:
   ytvo:
     description: "YTVideoOverlay commit hash"
     value: ${{ steps.get_commits.outputs.ytvo }}
+  youmute:
+    description: "YouMute commit hash"
+    value: ${{ steps.get_commits.outputs.youmute }}
+  youloop:
+    description: "YouLoop commit hash"
+    value: ${{ steps.get_commits.outputs.youloop }}
+  youspeed:
+    description: "YouSpeed commit hash"
+    value: ${{ steps.get_commits.outputs.youspeed }}
+  yougetcaption:
+    description: "YouGetCaption commit hash"
+    value: ${{ steps.get_commits.outputs.yougetcaption }}
   cyan:
     description: "Cyan commit hash"
     value: ${{ steps.get_commits.outputs.cyan }}
@@ -89,6 +109,10 @@ runs:
         ENABLE_DEMC: ${{ inputs.enable_demc }}
         ENABLE_GONERINO: ${{ inputs.enable_gonerino }}
         ENABLE_AUTOFLEX: ${{ inputs.enable_autoflex }}
+        ENABLE_YOUMUTE: ${{ inputs.enable_youmute }}
+        ENABLE_YOULOOP: ${{ inputs.enable_youloop }}
+        ENABLE_YOUSPEED: ${{ inputs.enable_youspeed }}
+        ENABLE_YOUGETCAPTION: ${{ inputs.enable_yougetcaption }}
       run: |
         cd ${{ github.workspace }}
         
@@ -118,6 +142,10 @@ runs:
           "ENABLE_DEMC|demc|https://github.com/therealFoxster/DontEatMyContent.git|DontEatMyContent"
           "ENABLE_GONERINO|gonerino|https://github.com/fosterbarnes/YGonerino.git|Gonerino"
           "ENABLE_AUTOFLEX|autoflex|https://github.com/pwnless/AutoFLEX.git|AutoFLEX"
+          "ENABLE_YOUMUTE|youmute|https://github.com/PoomSmart/YouMute.git|YouMute"
+          "ENABLE_YOULOOP|youloop|https://github.com/bhackel/YouLoop.git|YouLoop"
+          "ENABLE_YOUSPEED|youspeed|https://github.com/PoomSmart/YouSpeed.git|YouSpeed"
+          "ENABLE_YOUGETCAPTION|yougetcaption|https://github.com/PoomSmart/YouGetCaption.git|YouGetCaption"
         )
         
         for tweak in "${tweaks[@]}"; do
